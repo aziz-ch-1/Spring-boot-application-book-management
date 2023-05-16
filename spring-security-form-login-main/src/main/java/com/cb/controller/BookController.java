@@ -92,23 +92,19 @@ public class BookController {
  @PostMapping("/user/save/{id}")
  @Secured("permitAll")
  public String saveupdate(@ModelAttribute Book book,@PathVariable("id") Long id) {
-    /*********************************************/
 	    Book existingBook = service.getBookById(id);
 
-	    // Update the fields of the existing book entity
 	    existingBook.setName(book.getName());
 	    existingBook.setAuthor(book.getAuthor());
 	    existingBook.setPrice(book.getPrice());
 	 
-	 /**************************************************/
-//   bk.deleteById(id);
+
 	 bk.save(existingBook);
-//	 bl.deleteById(id);
+
 	 
-	 /********************************************/
 	 List<MyBookList> myBookList = bl.findByBook(existingBook);
 
-	    // Update the associated MyBookList entities with the new book information
+	
 	    for (MyBookList myBook : myBookList) {
 	        myBook.setName(existingBook.getName());
 	        myBook.setAuthor(existingBook.getAuthor());
@@ -116,7 +112,7 @@ public class BookController {
 	        bl.save(myBook);
 	    }
 
-	 /********************************************/
+
      return "redirect:/user/available";
      
  }
@@ -126,19 +122,19 @@ public class BookController {
 	    if (bookOptional.isPresent()) {
 	        Book book = bookOptional.get();
 	        
-	        // Retrieve the associated MyBookList records
+	        
 	        List<MyBookList> myBookList = bl.findByBook(book);
 
-	        // Delete the associated MyBookList records
+	       
 	        bl.deleteAll(myBookList);
 
-	        // Delete the Book entity
+	      
 	        bk.delete(book);
 	    }
 
 	 
 	 
-	 //bk.deleteById(id);
+	
      return "redirect:/user/available";
  } 
  
@@ -146,7 +142,7 @@ public class BookController {
 	public String getMyBooks(Model model,Authentication authentication)
 	{
      UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-     User user = rep.findByEmail(userDetails.getUsername()); // assuming UserRepository has a method to find user by email
+     User user = rep.findByEmail(userDetails.getUsername());
      List<MyBookList> list = bl.findByUser(user);
 		model.addAttribute("booklist",list);
 		return "booklist";	
